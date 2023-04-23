@@ -1,0 +1,50 @@
+program,version,time output,thoughts
+null,0,./null  0.00s user 0.00s system 87% cpu 0.003 total,d runtime consant
+hello,0,./hello  0.00s user 0.00s system 87% cpu 0.003 total,std overhead
+rayhello,0,./raylibhello  0.19s user 0.03s system 35% cpu 0.613 total,raylib overhead
+rayhello,1,./raylibhello  0.19s user 0.03s system 84% cpu 0.257 total,+ screenshot
+rayhello10,1,./raylibhello10  0.70s user 0.06s system 88% cpu 0.860 total,10x screenshots
+rayhello10,0,./raylibhello10  0.14s user 0.04s system 45% cpu 0.392 total,-screenshot
+rayhello10,0,./raylibhello10  0.13s user 0.03s system 79% cpu 0.203 total,no framelinit
+1000 hellos,0,./hello1000  0.25s user 0.16s system 26% cpu 1.528 total,more scale + high res
+1000 hellos,1,./hello1000  0.13s user 0.03s system 87% cpu 0.187 total,prevent redraw
+1000 hellos,2,./hello1000  6.75s user 5.76s system 96% cpu 12.966 total,+1000 screenshots
+1000 hellos,3,./hello1000  230.92s user 8.98s system 99% cpu 4:00.81 total,the screenshots failed
+1000 hellos,4,./hello1000  232.19s user 8.86s system 99% cpu 4:02.06 total,the rendering failed
+1000 hellos,5,./hello1000  231.78s user 9.46s system 94% cpu 4:16.63 total,disabled rendering prevention
+cpu 1000,0,./cpu1000  0.16s user 0.05s system 58% cpu 0.346 total,"controlled cpu rendering, no nothing"
+cpu 1000,1,ctrl-c computer dying,move cpu render to gpu to show
+cpu 1000,2,./cpu1000  9.89s user 0.43s system 63% cpu 16.316 total,unloading last render
+cpu 1000,3,./cpu1000  233.48s user 0.38s system 99% cpu 3:54.52 total,+ screenshots
+cpu 1000,4,./cpu1000  224.18s user 0.43s system 99% cpu 3:45.19 total,reuse cpu render(and it works now)
+cpu 1000,5,./cpu1000  0.24s user 0.19s system 25% cpu 1.671 total,/dev/null (still failed)
+cpu 1000,6,frooze 2 frames in,"mkfifo out.png
+; cat out.png > /dev/null"
+cpu 1000,7,SLOW,"spawnShell(""cat out.png > /dev/null"");"
+cpu 1000,8,./cpu1000  227.16s user 1.45s system 98% cpu 3:51.08 total,"spawnShell(""cat out.png >> /dev/null"");"
+pipetodevnull ,0,./pipetodevnull  0.02s user 0.09s system 5% cpu 1.866 total,???? why is piping to null slow?
+pipetodevnull ,1,./pipetodevnull  2.75s user 1.19s system 84% cpu 4.647 total,executeShell
+cpu 1000,9,./cpu1000  542.75s user 19.50s system 99% cpu 9:25.76 total,is it png conversion? ExportImageAsCode
+raw write,0,/rawwrite  2.23s user 0.40s system 35% cpu 7.458 total,maybe I need to by pixel render rather then storing a frame in ram?
+raw write,1,./rawwrite  2.06s user 0.01s system 80% cpu 2.587 total,./rawwrite | ffmpeg -f rawvideo -pixel_format rgb24 -video_size 256x256 -i pipe: out.mp4
+raw write,1,./rawwrite >> /dev/null  1.96s user 0.01s system 99% cpu 1.983 total,./rawwrite >> /dev/null
+raw write 2,idk 7,./rawwrite2  280.73s user 2.18s system 99% cpu 4:44.09 total,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: out2.mp  74.97s user 4.94s system 28% cpu 4:44.86 total
+raw write 2,idk 9,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  31.57s user 3.65s system 12% cpu 4:38.17 total,-preset ultrafast
+raw write 2,idk 10,./rawwrite2 >> /dev/null  272.70s user 1.37s system 100% cpu 4:33.45 total,/dev/null
+raw write 2,idk 10,./rawwrite2 >> /dev/null  178.97s user 1.18s system 99% cpu 3:00.64 total,ldc + -o3?
+raw write 3,0,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.56s user 3.86s system 45% cpu 1:16.35 total,bulk pixels?
+raw write 3,1,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.88s user 4.09s system 44% cpu 1:19.40 total,256
+raw write 3,2,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.23s user 5.87s system 49% cpu 1:12.73 total,32
+raw write 3,3,./rawwrite3 > /dev/null  68.44s user 0.28s system 99% cpu 1:08.82 total,>dev/null
+vomit,0,./vomit >> /dev/null  2.56s user 0.31s system 99% cpu 2.873 total,is it piping?
+vomit,0,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  24.00s user 3.25s system 251% cpu 10.841 total,
+raw write 3,4,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.05s user 3.35s system 46% cpu 1:12.20 total,[] thoery
+raw write 3,5,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.35s user 5.00s system 64% cpu 54.820 total,casts?
+raw write 3,6,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.64s user 3.40s system 67% cpu 50.210 total,inline?
+raw write 3,7,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.35s user 3.54s system 68% cpu 49.532 total,more inline
+raw write 3,8,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.04s user 2.98s system 71% cpu 46.148 total,1920 pixels?
+raw write 3,9,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  29.41s user 1.98s system 65% cpu 47.959 total,more pixels?
+raw write 4,0,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  30.79s user 3.82s system 29% cpu 1:56.58 total,some cleanup
+raw write 4,1,,"trying ""blizing"""
+raw write 4,idk 20,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  31.11s user 3.96s system 26% cpu 2:12.39 total,pain and suffering to get it working again
+raw write 4,???,ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -i pipe: -preset  32.84s user 4.11s system 32% cpu 1:54.79 total,idk why this is hard to mantain and slower
